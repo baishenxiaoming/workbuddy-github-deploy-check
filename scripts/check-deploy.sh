@@ -30,8 +30,14 @@ helper=$(git config --get-all credential.helper 2>/dev/null | tail -1 || true)
 [ -n "$helper" ] && ok "凭据助手 = $helper" || warn "未配置凭据助手"
 
 printf '\n[2] 写通路兜底\n'
+GH_BIN=""
 if command -v gh >/dev/null 2>&1; then
-  ok "gh CLI 已安装: $(gh --version | head -1)"
+  GH_BIN="gh"
+elif [ -x "/c/Program Files/GitHub CLI/gh.exe" ]; then
+  GH_BIN="/c/Program Files/GitHub CLI/gh.exe"
+fi
+if [ -n "$GH_BIN" ]; then
+  ok "gh CLI 已安装: $("$GH_BIN" --version | head -1)"
 else
   warn "gh CLI 未安装 —— 用户级写操作（建仓/推送）将缺少兜底链路"
 fi

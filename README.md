@@ -52,12 +52,15 @@ powershell -ExecutionPolicy Bypass -File scripts/check-deploy.ps1
 | OAuth 认证 | 通过，账号 `baishenxiaoming`（id 129289050） |
 | API 访问 | 通过，仓库搜索返回 3662 条 |
 | 仓库读取 | 通过，可读取分支列表 |
-| 创建仓库 | 403 `Resource not accessible by integration` |
-| gh CLI | 未安装 |
+| App 令牌建仓 | 403 `Resource not accessible by integration` |
+| gh CLI 建仓 | 成功，public 仓库 `baishenxiaoming/workbuddy-github-deploy-check` |
+| gh CLI 登录 | v2.104.0，scopes：`repo` / `read:org` / `gist` |
 | git 身份 | 已补齐（`baishenxiaoming@users.noreply.github.com`） |
-| 规范化发布 | 本地提交完成，远程推送待 OAuth 级授权 |
+| 规范化发布 | 完成，`main` 分支推送成功，本地与远程提交一致（`13b9975`） |
 
 **关键结论**：读链路走 GitHub App 安装令牌，可正常工作；`POST /user/repos` 这类用户级写操作不能由 App 安装令牌完成，会返回 403。这正是官方说明中「写操作用 gh CLI 兜底」的原因——**gh CLI 不是可选项，而是写通路的必要环节**。
+
+补齐 gh CLI 并完成一次浏览器授权后，建仓与 `git push` 均成功，五个阶段全部通过。
 
 ## 常见误判
 

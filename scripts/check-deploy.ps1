@@ -23,7 +23,10 @@ $helper = git config --get-all credential.helper 2>$null
 if ($helper) { Ok "凭据助手 = $($helper | Select-Object -Last 1)" } else { Warn "未配置凭据助手" }
 
 Write-Host "`n[2] 写通路兜底"
-if (Get-Command gh -ErrorAction SilentlyContinue) { Ok "gh CLI 已安装: $((gh --version)[0])" }
+$ghExe = $null
+if (Get-Command gh -ErrorAction SilentlyContinue) { $ghExe = (Get-Command gh).Source }
+elseif (Test-Path "C:\Program Files\GitHub CLI\gh.exe") { $ghExe = "C:\Program Files\GitHub CLI\gh.exe" }
+if ($ghExe) { Ok "gh CLI 已安装: $((& $ghExe --version)[0])" }
 else { Warn "gh CLI 未安装 —— 用户级写操作（建仓/推送）将缺少兜底链路" }
 
 Write-Host "`n[3] 当前仓库状态"
